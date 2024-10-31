@@ -1,0 +1,4 @@
+requests
+urllib3
+psycopg2-binary
+coverage # para verificar os testes

@@ -1,56 +1,132 @@
-# Sistema de Análise de Dados do IBGE
+# Ranking de Nomes do IBGE 📊
+Bem-vindo ao projeto Ranking de Nomes do IBGE! Este projeto marca um marco importante na minha jornada de desenvolvimento, onde aplico pela primeira vez, de forma documentada e estruturada, conhecimentos fundamentais em boas práticas, DDD (Domain-Driven Design), testes unitários e princípios de clean code.
 
-Este programa é uma aplicação Python que interage com a API do Instituto Brasileiro de Geografia e Estatística (IBGE) para obter e processar dados sobre nomes e classificações. O programa utiliza várias classes para organizar seu funcionamento, interagindo com uma base de dados Redis para armazenamento de cache.
+Com ele, é possível interagir com a API do IBGE para consultar a frequência e popularidade de nomes no Brasil. Os dados coletados são exibidos diretamente no terminal e também armazenados em um banco de dados PostgreSQL, proporcionando uma base sólida para análises futuras e garantindo a consistência por meio de uma restrição de unicidade que evita duplicações.
 
-## Estrutura do Programa
+O projeto foi estruturado e documentado com foco em organização e clareza, refletindo as boas práticas aprendidas e aplicadas ao longo do desenvolvimento.
+## Descrição
+Esta aplicação consulta a API do IBGE para obter dados sobre a popularidade de nomes no Brasil. Você pode especificar nomes, localidades, sexo e décadas para personalizar as consultas. Se forem fornecidos nomes, o programa utiliza a API nomes do IBGE com os nomes concatenados; caso contrário, utiliza a API ranking, que retorna os 20 nomes mais populares de acordo com os parâmetros fornecidos. Se nenhum parâmetro for fornecido, retorna o top 20 geral.
 
-O programa é composto pelas seguintes classes e scripts:
+## Estrutura do Projeto
+- main.py: Ponto de entrada da aplicação.
+- IBGE.py: Classe para interagir com a API do IBGE.
+- Item.py: Classe que representa cada item (nome) obtido.
+- Ranking.py: Classe para gerenciar e exibir o ranking.
+- Postgre.py: Classe para interagir com o banco de dados PostgreSQL.
+- credenciais.py: Arquivo com as credenciais do banco de dados.
+- requirements.txt: Lista de dependências do projeto.
+- README.md: Este arquivo.
+- tests/: Pasta contendo testes unitários para as funções do projeto.
 
-### 1. `IBGE.py`
 
-- **Descrição:** Classe responsável por interagir com a API do IBGE. Esta classe realiza requisições para obter informações sobre nomes, classificações e estados brasileiros.
-- **Funcionalidades:**
-  - Construção de endpoints da API baseada em parâmetros fornecidos.
-  - Realização de consultas à API e tratamento dos dados retornados.
-  - Implementação de cache para otimizar as requisições e reduzir a carga na API.
+## Pré-requisitos
+- Python 3.6 ou superior
+- PostgreSQL instalado e em execução
+- Credenciais de acesso ao banco de dados PostgreSQL
 
-### 2. `Item.py`
+## Instalação
+Clone o repositório:
 
-- **Descrição:** Esta classe parece gerenciar itens ou dados específicos, possivelmente relacionados aos resultados obtidos da API do IBGE.
-- **Funcionalidades:** 
-  - (Detalhes específicos das funcionalidades da classe `Item`, baseados na análise do código.)
+- Clone o repositório:
+  ```bash
+  git clone https://https://github.com/vinilopesc/IBGE.git
+  cd ranking-nomes-ibge
+  ```
+- Crie um ambiente virtual (opcional, mas recomendado):
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate  # No Windows: venv\Scripts\activate
+  ```
+- Instale as dependências:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Crie um arquivo chamado credenciais.py na raiz do projeto com o seguinte conteúdo:
+  ```
+  host = 'seu_host'
+  port = 5432
+  database = 'seu_banco_de_dados'
+  user = 'seu_usuario'
+  password = 'sua_senha'
+  # Substitua 'seu_host', 'seu_banco_de_dados', 'seu_usuario' e 'sua_senha' pelas suas credenciais do PostgreSQL.
+  ```
+## Como Usar
+Para executar o programa, utilize o seguinte comando no terminal:
 
-### 3. `main.py`
+  ```bash
+python main.py --nomes nome1 nome2 --local UF --sexo M/F/- --decada ano
+  ```
+### Parâmetros disponíveis:
 
-- **Descrição:** Script principal que orquestra a execução do programa. Este script utiliza as classes `RepositorioIBGE`, `Ranking`, e interage com o Redis.
-- **Funcionalidades:**
-  - Inicialização do programa.
-  - Execução de operações específicas, como buscar dados, processá-los e exibir resultados.
+- --nomes: Lista de nomes para gerar o ranking (opcional).
+- --local: Sigla da unidade federativa (por exemplo, SP, RJ) ou BR para Brasil (opcional).
+- --sexo: Sexo para filtrar os nomes (M, F ou - para ambos) (opcional).
+- --decada: Década para filtrar os nomes (formato YYYY, por exemplo, 1990) (opcional).
+Exemplo:
 
-### 4. `Ranking.py`
+  ```bash
+  python main.py --nomes João Maria --local SP RJ --sexo F --decada 1980 1990
+  ```
+  Este comando irá buscar os nomes "João" e "Maria" nos estados de São Paulo e Rio de Janeiro, sexo feminino, nas décadas de 1980 e 1990.
+  ```markdown    
+  Nome           Localidade     Sexo           Década         Frequência
+  ----------------------------------------------------------------------
+  MARIA             35            F            1980            105247
+  MARIA             35            F            1990            48185
+  MARIA             33            F            1980            27944
+  MARIA             33            F            1990            17632
+  JOAO              35            F            1990            423
+  JOAO              35            F            1980            223
+  JOAO              33            F            1990            182
+  JOAO              33            F            1980            85
+  ```
 
-- **Descrição:** Classe destinada a lidar com a lógica de ranking dos dados obtidos.
-- **Funcionalidades:**
-  - Processamento e ordenação de dados.
-  - Geração de rankings com base nos dados fornecidos.
+### Exemplo de Saída
+Ao executar o programa sem nenhum parâmetro:
 
-### 5. `Redis.py`
+  ```bash
+  python main.py
+  ```
+A saída será semelhante a:
 
-- **Descrição:** Classe que gerencia a conexão e operações com o Redis, um sistema de armazenamento de estrutura de dados em memória.
-- **Funcionalidades:**
-  - Conexão com o banco de dados Redis.
-  - Operações de cache, como armazenar e recuperar dados.
+  ```markdown
+Copiar código
+Nome           Localidade     Sexo           Década         Frequência
+----------------------------------------------------------------------
+MARIA          BR             -              Geral          11734129
+JOSE           BR             -              Geral          5754529
+ANA            BR             -              Geral          3089858
+JOAO           BR             -              Geral          2984119
+ANTONIO        BR             -              Geral          2576348
+FRANCISCO      BR             -              Geral          1772197
+CARLOS         BR             -              Geral          1489191
+PAULO          BR             -              Geral          1423262
+PEDRO          BR             -              Geral          1219605
+LUCAS          BR             -              Geral          1127310
+LUIZ           BR             -              Geral          1107792
+MARCOS         BR             -              Geral          1106165
+LUIS           BR             -              Geral          935905
+GABRIEL        BR             -              Geral          932449
+RAFAEL         BR             -              Geral          821638
+FRANCISCA      BR             -              Geral          725642
+DANIEL         BR             -              Geral          711338
+MARCELO        BR             -              Geral          693215
+BRUNO          BR             -              Geral          668217
+EDUARDO        BR             -              Geral          632664
+  ```
+### Testes
+- O projeto inclui testes unitários para todas as funções, localizados na pasta tests. Para executar os testes, utilize:
 
-## Uso do Programa
+  ```bash
+  python -m unittest discover tests
+  ```
+  
+## Referências
+[- API do IBGE - Nomes: Documentação da API
+](https://servicodados.ibge.gov.br/api/docs/nomes?versao=2)
 
-Para usar o programa, siga estas etapas:
+## Observações
 
-1. Certifique-se de que o ambiente Python e o Redis estejam configurados corretamente.
-2. Execute o `main.py` para iniciar o programa.
-3. Interaja com o programa conforme as instruções exibidas no terminal.
-
-## Requisitos
-
-- Python 3.x
-- Acesso à API do IBGE.
-- Redis instalado e configurado.
+- Se nenhum nome for fornecido, o programa retornará os nomes mais populares com base nos outros parâmetros.
+- Os dados coletados são armazenados no banco de dados PostgreSQL configurado, evitando duplicatas.
+Certifique-se de que o banco de dados PostgreSQL está em execução e as credenciais estão corretas.
