@@ -90,7 +90,6 @@ Ao executar o programa sem nenhum parâmetro:
 A saída será semelhante a:
 
   ```markdown
-Copiar código
 Nome           Localidade     Sexo           Década         Frequência
 ----------------------------------------------------------------------
 MARIA          BR             -              Geral          11734129
